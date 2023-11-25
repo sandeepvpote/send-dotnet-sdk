@@ -2,8 +2,11 @@
 
 namespace SitecoreSendSDK
 {
-    public class SendClientSettings : IApiKeySettings
+    public class SendClientSettingsConfiguration : IApiKeySettings
     {
+
+        public const string SendClientSettings = "SendClientSettings";
+
         [Required]
         public string Url { get; init; }
 
