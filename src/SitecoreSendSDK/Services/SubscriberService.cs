@@ -13,7 +13,7 @@ namespace SitecoreSendSDK.Services
             _settings = settings.Value;
         }
 
-        public Task<T> GetAllSubscriber<T>(string mailingListId, string status, string format, int pageNumber, int pageSize, CancellationToken cancellationToken)
+        public Task<T> GetAllSubscribers<T>(string mailingListId, string status, string format, int pageNumber, int pageSize, CancellationToken cancellationToken)
         {
             return _settings.PrepareRequest()
                 .AppendPathSegment("lists")
@@ -35,6 +35,18 @@ namespace SitecoreSendSDK.Services
                 .SetQueryParam("Email", emailId)
                 .GetJsonAsync<T>(cancellationToken);
 
+        }
+
+        public Task<T> GetSubscriberById<T>(string mailingListId, string subscriberId, string format, CancellationToken cancellationToken)
+        {
+            var response = _settings.PrepareRequest()
+                .AppendPathSegment("subscribers")
+                .AppendPathSegment(mailingListId)
+                .AppendPathSegment("find")
+                .AppendPathSegment($"{subscriberId}.{format}")
+                .GetJsonAsync<T>(cancellationToken);
+
+            return response;
         }
 
         public Task<T1> AddSubscriber<T1, T2>(string mailingListId, T2 request, CancellationToken cancellationToken)
@@ -66,17 +78,82 @@ namespace SitecoreSendSDK.Services
             return response;
         }
 
-        public Task<T> GetSubscriberById<T>(string mailingListId, string subscriberId, string format, CancellationToken cancellationToken)
+        public Task<T1> UnSubscribeAll<T1, T2>(
+            string format,
+            T2 request,
+            CancellationToken cancellationToken)
+        {
+            var response = _settings.PrepareRequest()
+                .AppendPathSegment("subscribers")
+                .AppendPathSegment($"unsubscribe.{format}")
+                .PostJsonAsync(request, cancellationToken)
+                .ReceiveJson<T1>();
+
+            return response;
+        }
+
+        public Task<T1> UnSubscribe<T1, T2>(string mailingListId,
+            string format,
+            T2 request,
+            CancellationToken cancellationToken)
         {
             var response = _settings.PrepareRequest()
                 .AppendPathSegment("subscribers")
                 .AppendPathSegment(mailingListId)
-                .AppendPathSegment("find")
-                .AppendPathSegment($"{subscriberId}.{format}")
-                .GetJsonAsync<T>(cancellationToken);
+                .AppendPathSegment($"unsubscribe.{format}")
+                .PostJsonAsync(request, cancellationToken)
+                .ReceiveJson<T1>();
 
             return response;
         }
+
+        public Task<T1> CampaignUnSubscribe<T1, T2>(string mailingListId, string campaignId,
+            string subscriberId,
+            string format,
+            T2 request,
+            CancellationToken cancellationToken)
+        {
+            var response = _settings.PrepareRequest()
+                .AppendPathSegment("subscribers")
+                .AppendPathSegment(mailingListId)
+                .AppendPathSegment(campaignId)
+                .AppendPathSegment($"unsubscribe.{format}")
+                .PostJsonAsync(request, cancellationToken)
+                .ReceiveJson<T1>();
+
+            return response;
+        }
+
+        public Task<T1> RemoveSubscriber<T1, T2>(string mailingListId,
+            string format,
+            T2 request,
+            CancellationToken cancellationToken)
+        {
+            var response = _settings.PrepareRequest()
+                .AppendPathSegment("subscribers")
+                .AppendPathSegment(mailingListId)
+                .AppendPathSegment($"remove.{format}")
+                .PostJsonAsync(request, cancellationToken)
+                .ReceiveJson<T1>();
+
+            return response;
+        }
+
+        public Task<T1> RemoveSubscribers<T1, T2>(string mailingListId,
+            string format,
+            T2 request,
+            CancellationToken cancellationToken)
+        {
+            var response = _settings.PrepareRequest()
+                .AppendPathSegment("subscribers")
+                .AppendPathSegment(mailingListId)
+                .AppendPathSegment($"remove_many.{format}")
+                .PostJsonAsync(request, cancellationToken)
+                .ReceiveJson<T1>();
+
+            return response;
+        }
+
     }
 
     public static class ApiKeySettingsExtensions

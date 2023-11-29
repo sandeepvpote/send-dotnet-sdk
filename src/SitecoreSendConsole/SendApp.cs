@@ -26,7 +26,7 @@ namespace SitecoreSendConsole
             var addSubscriberResponseJson = JsonSerializer.Serialize<SubscriberResponse>(addSubscriberResponse);
             Console.Write(addSubscriberResponseJson);
 
-            var allSubscribersResponse = _subscriberService.GetAllSubscriber<SubscriberListResponse>("<<Enter mailing list id>>",
+            var allSubscribersResponse = _subscriberService.GetAllSubscribers<SubscriberListResponse>("<<Enter mailing list id>>",
                 SubscriberStatus.Subscribed.ToString(), ResponseFormat.json.ToString(), 1, 10, token).Result; 
 
             var allSubscriberJson = JsonSerializer.Serialize<SubscriberListResponse>(allSubscribersResponse);
