@@ -29,7 +29,8 @@ namespace SitecoreSendConsole
             services.AddSingleton(clientSettings);
 
             services.AddScoped<ISubscriberService, SubscriberService>();
-             services.AddTransient<SendApp>();
+            services.AddScoped<IMailingListService, IMailingListService>();
+            services.AddTransient<SendApp>();
              
 
             var serviceProvider = services.BuildServiceProvider();
